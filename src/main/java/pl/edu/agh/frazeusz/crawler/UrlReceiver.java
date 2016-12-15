@@ -1,5 +1,7 @@
 package pl.edu.agh.frazeusz.crawler;
 
+import java.util.List;
+
 /**
  * Created by Wojtek on 2016-12-14.
  */
@@ -10,7 +12,7 @@ public class UrlReceiver {
         this.crawler = crawler;
     }
 
-    public void addUrl(String url) {
-        crawler.addUrl(url);
+    public void addUrlsToCrawl(String baseUrl, List<String> childrenUrls) {
+        crawler.addUrlsToCrawl(baseUrl, childrenUrls);
     }
 }

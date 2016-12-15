@@ -1,9 +1,11 @@
 package pl.edu.agh.frazeusz.parser;
 
-import crawler.Crawler;
-import crawler.UrlReceiver;
+import pl.edu.agh.frazeusz.crawler.Crawler;
+import pl.edu.agh.frazeusz.crawler.UrlReceiver;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class Parser {
@@ -15,14 +17,17 @@ public class Parser {
         urlReceiver = new UrlReceiver(crawler);
     }
 
-    private void addUrl(String url) {
-        urlReceiver.addUrl(url);
+    private void addUrlsToCrawl(String baseUrl, List<String> childrenUrls) {
+        urlReceiver.addUrlsToCrawl(baseUrl, childrenUrls);
     }
 
     // This sends parsed Urls
     private void sendUrls() {
         // e.g.
-        addUrl("url_1");
+        List<String> listOfChildren = new ArrayList<>();
+        listOfChildren.add("url_1_child_1");
+        listOfChildren.add("url_1_child_2");
+        addUrlsToCrawl("url_1", listOfChildren);
     }
 
     private void update_info() {
@@ -33,8 +38,8 @@ public class Parser {
         System.out.println();
     }
 
-    void addContent(String content) {
-        contents.add(content);
+    void addContentToParse(String baseUrl, String content, boolean extractLinks) {
+        contents.add(baseUrl);
         update_info();
         sendUrls();            // Send callback
     }

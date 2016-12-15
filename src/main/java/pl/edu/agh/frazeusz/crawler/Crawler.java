@@ -1,7 +1,7 @@
 package pl.edu.agh.frazeusz.crawler;
 
-import parser.ContentReceiver;
-import parser.Parser;
+import pl.edu.agh.frazeusz.parser.ContentReceiver;
+import pl.edu.agh.frazeusz.parser.Parser;
 import pl.edu.agh.frazeusz.utilities.Node;
 
 import java.util.*;
@@ -62,7 +62,7 @@ public class Crawler {
     // This sends downloaded Content
     private void sendContent() {
         // e.g.
-        contentReceiver.addContent("content_1");
+        contentReceiver.addContentToParse("baseUrl_1", "content_1", true);
     }
 
     private void update_info() {
@@ -74,8 +74,10 @@ public class Crawler {
     }
 
     // This is delegated in UrlReceiver
-    void addUrl(String url) {
-        urlsToProcess.add(url);
+    void addUrlsToCrawl(String baseUrl, List<String> childrenUrls) {
+        urlsToProcess.add(baseUrl);
+        // Nodes ...
+
         update_info();
         // sendContent();      // Send callback
     }

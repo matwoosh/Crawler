@@ -1,6 +1,6 @@
 package pl.edu.agh.frazeusz.crawler;
 
-import monitor.StatsReceiver;
+import pl.edu.agh.frazeusz.monitor.StatsReceiver;
 
 /**
  * Created by Mateusz on 14/12/2016.

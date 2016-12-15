@@ -10,7 +10,7 @@ public class ContentReceiver {
         this.parser = parser;
     }
 
-    public void addContent(String content) {
-        parser.addContent(content);
+    public void addContentToParse(String baseURL, String content, boolean extractLinks) {
+        parser.addContentToParse(baseURL, content, extractLinks);
     }
 }
