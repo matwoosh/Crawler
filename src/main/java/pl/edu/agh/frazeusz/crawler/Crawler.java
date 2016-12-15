@@ -1,56 +1,83 @@
 package pl.edu.agh.frazeusz.crawler;
 
+import parser.ContentReceiver;
+import parser.Parser;
 import pl.edu.agh.frazeusz.utilities.Node;
 
-import java.util.ArrayDeque;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-/**
- * Created by Mateusz on 14/12/2016.
- */
-public class Crawler implements URLReceiver{
+public class Crawler {
+    private Queue<String> urlsToProcess;
+    private Set<Node<String>> allUrls;
 
-    private final ArrayDeque<String> urlsToProcess;
-    private final Set<Node<String>> baseUrls;
+    private int cores = Runtime.getRuntime().availableProcessors();
+    private ExecutorService executor = Executors.newFixedThreadPool(cores);
     private boolean isCrawling;
 
+    private ContentReceiver contentReceiver;
+
     public Crawler() {
-        this.urlsToProcess = new ArrayDeque<>();
-        this.baseUrls = new HashSet<>();
+        urlsToProcess = new LinkedList<>();
+        allUrls = new HashSet<>();
+
+        Parser parser = new Parser(this);
+        contentReceiver = new ContentReceiver(parser);
     }
 
     public void start(List<String> urlsFromUser) {
-        if(!isCrawling){
-            this.isCrawling = true;
+        if (!isCrawling) {
             urlsToProcess.addAll(urlsFromUser);
-            for (String url: urlsFromUser
-                 ) {
-                baseUrls.add(new Node<String>(url));
+            for (String url : urlsFromUser) {
+                allUrls.add(new Node<>(url));
             }
+
             initializeDownloaders();
         }
     }
 
     public void stop() {
-        clear();
+        stop_threads();
         this.isCrawling = false;
     }
 
-    private void initializeDownloaders(){
-        Downloader downloader1 = new Downloader();
-        Downloader downloader2 = new Downloader();
-        downloader1.run();
-        downloader2.run();
+    private void stop_threads() {
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+        }
     }
 
-    private void clear() {
+    private void initializeDownloaders() {
+        // Concurrent tasks
+        for (int i = 0; i < cores; i++) {
+            Downloader downloader = new Downloader();
+            executor.execute(downloader);
+        }
 
+        // or Threadpool or etc...
+        sendContent();
     }
 
-    public void addUrlsToCrawl(String baseUrl, List<String> childrenUrls) {
+    // This sends downloaded Content
+    private void sendContent() {
+        // e.g.
+        contentReceiver.addContent("content_1");
+    }
 
+    private void update_info() {
+        System.out.println("C << przyszedl nowy URL");
+        for (String element : urlsToProcess) {
+            System.out.print("  " + element + " ");
+        }
+        System.out.println();
+    }
+
+    // This is delegated in UrlReceiver
+    void addUrl(String url) {
+        urlsToProcess.add(url);
+        update_info();
+        // sendContent();      // Send callback
     }
 
 }
