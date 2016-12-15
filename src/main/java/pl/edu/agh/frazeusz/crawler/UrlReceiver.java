@@ -2,10 +2,10 @@ package pl.edu.agh.frazeusz.crawler;
 
 import java.util.List;
 
-public interface URLReceiver {
-
-    void start(List<String> URLs);
-
+/**
+ * Created by Wojtek on 2016-12-15.
+ */
+public interface UrlReceiver {
     void addUrlsToCrawl(String baseUrl, List<String> childrenUrls);
 
 }
