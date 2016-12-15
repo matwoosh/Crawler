@@ -1,8 +1,7 @@
 package pl.edu.agh.frazeusz.crawler;
 
-import pl.edu.agh.frazeusz.parser.ContentReceiver;
-import pl.edu.agh.frazeusz.parser.Parser;
-import pl.edu.agh.frazeusz.utilities.Node;
+import pl.edu.agh.frazeusz.parser.*;
+import pl.edu.agh.frazeusz.utilities.Url;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -10,27 +9,27 @@ import java.util.concurrent.Executors;
 
 public class Crawler {
     private Queue<String> urlsToProcess;
-    private Set<Node<String>> allUrls;
+    private Set<Url<String>> allUrls;
 
     private int cores = Runtime.getRuntime().availableProcessors();
     private ExecutorService executor = Executors.newFixedThreadPool(cores);
     private boolean isCrawling;
 
-    private ContentReceiver contentReceiver;
+    private ContentReceiver contentReceiverImpl;
 
     public Crawler() {
         urlsToProcess = new LinkedList<>();
         allUrls = new HashSet<>();
 
         Parser parser = new Parser(this);
-        contentReceiver = new ContentReceiver(parser);
+        contentReceiverImpl = new ContentReceiverImpl(parser);
     }
 
     public void start(List<String> urlsFromUser) {
         if (!isCrawling) {
             urlsToProcess.addAll(urlsFromUser);
             for (String url : urlsFromUser) {
-                allUrls.add(new Node<>(url));
+                allUrls.add(new Url<>(url));
             }
 
             initializeDownloaders();
@@ -62,7 +61,7 @@ public class Crawler {
     // This sends downloaded Content
     private void sendContent() {
         // e.g.
-        contentReceiver.addContentToParse("baseUrl_1", "content_1", true);
+        contentReceiverImpl.addContentToParse("baseUrl_1", "content_1", true);
     }
 
     private void update_info() {
@@ -73,7 +72,7 @@ public class Crawler {
         System.out.println();
     }
 
-    // This is delegated in UrlReceiver
+    // This is delegated in UrlReceiverImpl
     void addUrlsToCrawl(String baseUrl, List<String> childrenUrls) {
         urlsToProcess.add(baseUrl);
         // Nodes ...

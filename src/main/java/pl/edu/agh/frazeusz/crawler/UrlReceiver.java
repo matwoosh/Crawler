@@ -3,16 +3,9 @@ package pl.edu.agh.frazeusz.crawler;
 import java.util.List;
 
 /**
- * Created by Wojtek on 2016-12-14.
+ * Created by Wojtek on 2016-12-15.
  */
-public class UrlReceiver {
-    private Crawler crawler;
+public interface UrlReceiver {
+    void addUrlsToCrawl(String baseUrl, List<String> childrenUrls);
 
-    public UrlReceiver(Crawler crawler) {
-        this.crawler = crawler;
-    }
-
-    public void addUrlsToCrawl(String baseUrl, List<String> childrenUrls) {
-        crawler.addUrlsToCrawl(baseUrl, childrenUrls);
-    }
 }

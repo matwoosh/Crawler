@@ -1,16 +1,9 @@
 package pl.edu.agh.frazeusz.parser;
 
 /**
- * Created by Wojtek on 2016-12-14.
+ * Created by Wojtek on 2016-12-15.
  */
-public class ContentReceiver {
-    private Parser parser;
+public interface ContentReceiver {
+    void addContentToParse(String baseURL, String content, boolean extractLinks);
 
-    public ContentReceiver(Parser parser) {
-        this.parser = parser;
-    }
-
-    public void addContentToParse(String baseURL, String content, boolean extractLinks) {
-        parser.addContentToParse(baseURL, content, extractLinks);
-    }
 }

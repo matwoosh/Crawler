@@ -7,37 +7,37 @@ import java.util.Objects;
 /**
  * Created by Mateusz on 14/12/2016.
  */
-public class Node<T> {
+public class Url<T> {
 
-    private List<Node<T>> children = new ArrayList<Node<T>>();
-    private Node<T> parent = null;
+    private List<Url<T>> children = new ArrayList<Url<T>>();
+    private Url<T> parent = null;
     private T data = null;
 
-    public Node(T data) {
+    public Url(T data) {
         this.data = data;
     }
 
-    public Node(T data, Node<T> parent) {
+    public Url(T data, Url<T> parent) {
         this.data = data;
         this.parent = parent;
     }
 
-    public List<Node<T>> getChildren() {
+    public List<Url<T>> getChildren() {
         return children;
     }
 
-    public void setParent(Node<T> parent) {
+    public void setParent(Url<T> parent) {
         parent.addChild(this);
         this.parent = parent;
     }
 
     public void addChild(T data) {
-        Node<T> child = new Node<T>(data);
+        Url<T> child = new Url<T>(data);
         child.setParent(this);
         this.children.add(child);
     }
 
-    public void addChild(Node<T> child) {
+    public void addChild(Url<T> child) {
         child.setParent(this);
         this.children.add(child);
     }
@@ -70,8 +70,8 @@ public class Node<T> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Node<?> node = (Node<?>) o;
-        return Objects.equals(data, node.data);
+        Url<?> url = (Url<?>) o;
+        return Objects.equals(data, url.data);
     }
 
     @Override
