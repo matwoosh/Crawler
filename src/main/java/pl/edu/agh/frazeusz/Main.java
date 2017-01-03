@@ -1,21 +1,30 @@
 package pl.edu.agh.frazeusz;
 
 import pl.edu.agh.frazeusz.crawler.Crawler;
+import pl.edu.agh.frazeusz.gui.CCPanel;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.swing.*;
 
 public class Main {
-     public static void main(String[] args) {
+    public static void main(String[] args) {
         Crawler crawler = new Crawler();
-        List<String> input_urls = new ArrayList<>();
 
-        // e.g.
-        input_urls.add("input_1");
-        input_urls.add("input_2");
+        JFrame f = new JFrame("Crawler");
+        new CCPanel(f);
 
-        crawler.start(input_urls);
+        f.setDefaultCloseOperation(JFrame. EXIT_ON_CLOSE);
+        f.setSize(440, 250);
+        f.getContentPane().setLayout(null);
+        f.setVisible(true);
 
-        crawler.stop();
+//        List<String> input_urls = new ArrayList<>();
+//
+//        // e.g.
+//        input_urls.add("input_1");
+//        input_urls.add("input_2");
+//
+//        crawler.start(input_urls);
+//
+//        crawler.stop();
     }
 }
