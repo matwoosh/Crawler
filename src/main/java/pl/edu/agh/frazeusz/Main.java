@@ -1,18 +1,23 @@
 package pl.edu.agh.frazeusz;
 
 import pl.edu.agh.frazeusz.crawler.Crawler;
-import pl.edu.agh.frazeusz.gui.CCPanel;
+import pl.edu.agh.frazeusz.gui.CrawlerGui;
 
 import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        Crawler crawler = new Crawler();
+        final Crawler crawler = new Crawler();
+        final JFrame f = new JFrame("Crawler");
 
-        JFrame f = new JFrame("Crawler");
-        new CCPanel(f);
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new CrawlerGui(f, crawler);
+            }
+        });
 
-        f.setDefaultCloseOperation(JFrame. EXIT_ON_CLOSE);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(440, 250);
         f.getContentPane().setLayout(null);
         f.setVisible(true);
