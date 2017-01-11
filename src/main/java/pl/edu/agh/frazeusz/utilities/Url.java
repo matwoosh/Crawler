@@ -8,22 +8,16 @@ import java.util.Objects;
  * Created by Mateusz on 14/12/2016.
  */
 public class Url<T> {
-
-    private List<Url<T>> children = new ArrayList<Url<T>>();
     private Url<T> parent = null;
-    private T data = null;
+    private List<Url<T>> children = new ArrayList<>();
+    String absoluteUrl;
 
-    public Url(T data) {
-        this.data = data;
+    public Url(String parent) {
+        // TODO
     }
 
-    public Url(T data, Url<T> parent) {
-        this.data = data;
+    public Url(Url<T> parent) {
         this.parent = parent;
-    }
-
-    public List<Url<T>> getChildren() {
-        return children;
     }
 
     public void setParent(Url<T> parent) {
@@ -31,10 +25,8 @@ public class Url<T> {
         this.parent = parent;
     }
 
-    public void addChild(T data) {
-        Url<T> child = new Url<T>(data);
-        child.setParent(this);
-        this.children.add(child);
+    public List<Url<T>> getChildren() {
+        return children;
     }
 
     public void addChild(Url<T> child) {
@@ -42,12 +34,16 @@ public class Url<T> {
         this.children.add(child);
     }
 
-    public T getData() {
-        return this.data;
+    public void addChildren(List<Url> children) {
+        // TODO
     }
 
-    public void setData(T data) {
-        this.data = data;
+    public String getAbsoluteUrl() {
+        return absoluteUrl;
+    }
+
+    public void setAbsoluteUrl(String absoluteUrl) {
+        this.absoluteUrl = absoluteUrl;
     }
 
     public boolean isRoot() {
@@ -63,19 +59,5 @@ public class Url<T> {
 
     public void removeParent() {
         this.parent = null;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Url<?> url = (Url<?>) o;
-        return Objects.equals(data, url.data);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(data);
     }
 }

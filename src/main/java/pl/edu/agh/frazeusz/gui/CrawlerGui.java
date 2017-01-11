@@ -64,26 +64,26 @@ public class CrawlerGui {
         return urlsToCrawl;
     }
 
-    public void setValuesOfDepth(int nrOfDefaultDepth, int minDepth, int maxDepth, int stepSize) {
+    public void setValuesOfDepth(int nrOfDefaultDepth, int min, int max, int stepSize) {
         this.nrOfDefaultDepth = nrOfDefaultDepth;
         nrOfChosenDepth = nrOfDefaultDepth;
 
-        SpinnerModel valueOfDepth = new SpinnerNumberModel(nrOfDefaultDepth, minDepth, maxDepth, stepSize);
+        SpinnerModel valueOfDepth = new SpinnerNumberModel(nrOfDefaultDepth, min, max, stepSize);
         spinnerDepth.setModel(valueOfDepth);
 
         //---- labelDepth2 ----
-        labelDepth2.setText(minDepth + " - " + maxDepth + " (default: " + nrOfDefaultDepth + ")");
+        labelDepth2.setText(min + " - " + max + " (default: " + nrOfDefaultDepth + ")");
     }
 
-    public void setValuesOfThreads(int nrOfDefaultThreads, int minThreads, int maxThreads, int stepSize) {
+    public void setValuesOfThreads(int nrOfDefaultThreads, int min, int max, int stepSize) {
         this.nrOfDefaultThreads = nrOfDefaultThreads;
         nrOfChosenThreads = nrOfDefaultThreads;
 
-        SpinnerModel valueOfThreads = new SpinnerNumberModel(nrOfDefaultThreads, minThreads, maxThreads, stepSize);
+        SpinnerModel valueOfThreads = new SpinnerNumberModel(nrOfDefaultThreads, min, max, stepSize);
         spinnerThreads.setModel(valueOfThreads);
 
         //---- labelThreads2 ----
-        labelThreads2.setText(minThreads + " - " + maxThreads + " (default: " + nrOfDefaultThreads + ")");
+        labelThreads2.setText(min + " - " + max + " (default: " + nrOfDefaultThreads + ")");
     }
 
     private void initComponents() {

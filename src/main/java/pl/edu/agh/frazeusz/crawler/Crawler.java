@@ -1,7 +1,5 @@
 package pl.edu.agh.frazeusz.crawler;
 
-import pl.edu.agh.frazeusz.parser.ContentReceiver;
-import pl.edu.agh.frazeusz.parser.ContentReceiverImpl;
 import pl.edu.agh.frazeusz.parser.Parser;
 import pl.edu.agh.frazeusz.utilities.Url;
 
@@ -13,20 +11,17 @@ public class Crawler {
     private Queue<String> urlsToProcess;
     private Set<Url<String>> allUrls;
 
-    private int nrOfThreads;
-    private int nrOfDepth;
-
     private ExecutorService executor;
     private boolean isCrawling;
 
-    private ContentReceiver contentReceiverImpl;
+    private int nrOfThreads;
+    private int nrOfDepth;
 
     public Crawler() {
         urlsToProcess = new LinkedList<>();
         allUrls = new HashSet<>();
 
         Parser parser = new Parser(this);
-        contentReceiverImpl = new ContentReceiverImpl(parser);
     }
 
     public void start(ArrayList<String> urlsFromUser, int nrOfThreads, int nrOfDepth) {
@@ -42,7 +37,7 @@ public class Crawler {
 
         if (!isCrawling) {
             for (String url : urlsToProcess) {
-                allUrls.add(new Url<>(url));
+                //allUrls.add(new Url<>(url)); // TODO
             }
 
             initializeDownloaders();
@@ -72,13 +67,6 @@ public class Crawler {
         }
 
         // or Threadpool or etc...
-        sendContent();
-    }
-
-    // This sends downloaded Content
-    private void sendContent() {
-        // e.g.
-        contentReceiverImpl.addContentToParse("baseUrl_1", "content_1", true);
     }
 
     private void update_info() {
@@ -87,15 +75,6 @@ public class Crawler {
             System.out.print("  " + element + " ");
         }
         System.out.println();
-    }
-
-    // This is delegated in UrlReceiverImpl
-    void addUrlsToCrawl(String baseUrl, List<String> childrenUrls) {
-        urlsToProcess.add(baseUrl);
-        // Nodes ...
-
-        update_info();
-        // sendContent();      // Send callback
     }
 
 }
