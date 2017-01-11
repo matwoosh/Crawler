@@ -90,7 +90,7 @@ public class Crawler {
         // or Threadpool or etc...
     }
 
-    private void sendContent() {
+    private void sendStatsToMonitor() {
         monitor.addProcessedPages(processedPages, pageSizeInBytes);
         monitor.setPagesQueueSize(allUrls.size());
         // TODO
