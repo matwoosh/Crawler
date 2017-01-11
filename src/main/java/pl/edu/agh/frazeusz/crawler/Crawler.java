@@ -18,13 +18,25 @@ public class Crawler {
 
     private ExecutorService executor;
     private boolean isCrawling;
+    private int processedPages;
+    private long pageSizeInBytes;
 
     public Crawler(Parser parser, Monitor monitor) {
         this.monitor = monitor;
         this.parser = parser;
+        this.processedPages = 0;
+        this.pageSizeInBytes = 0;
 
         urlsToProcess = new LinkedList<>();
         allUrls = new HashSet<>();
+    }
+
+    void addProcessedPages(int processedPages) {
+        this.processedPages += processedPages;
+    }
+
+    void addPageSizeInBytes(long pageSizeInBytes) {
+        this.pageSizeInBytes += pageSizeInBytes;
     }
 
     public void start(ArrayList<String> urlsFromUser, int nrOfThreads, int nrOfDepth) {
@@ -64,17 +76,23 @@ public class Crawler {
     }
 
     private void initializeDownloaders() {
+        // TODO
+
         // Concurrent tasks
         for (int i = 0; i < nrOfThreads; i++) {
-            Downloader downloader = new Downloader(parser);
-            executor.execute(downloader);
+            // TODO - simple example
+            if (urlsToProcess.peek() != null) {
+                Downloader downloader = new Downloader(this, parser, urlsToProcess.poll());
+                executor.execute(downloader);
+            }
         }
 
-        // TODO
         // or Threadpool or etc...
     }
 
     private void sendContent() {
+        monitor.addProcessedPages(processedPages, pageSizeInBytes);
+        monitor.setPagesQueueSize(allUrls.size());
         // TODO
     }
 }
