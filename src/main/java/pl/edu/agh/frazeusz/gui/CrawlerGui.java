@@ -19,18 +19,16 @@ import java.util.concurrent.Executors;
  */
 
 public class CrawlerGui {
+    // Class passed to GUI
     private final Crawler crawler;
     // Defaults
     private int nrOfDefaultThreads = Runtime.getRuntime().availableProcessors();
     private int nrOfDefaultDepth = 2;
-
     // Parameters to be passed to Crawler
     private int nrOfChosenThreads;
     private int nrOfChosenDepth;
     private ArrayList<String> urlsToCrawl;
-
     // GUI components
-    private JFrame f;
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JLabel labelLinks;
@@ -46,18 +44,20 @@ public class CrawlerGui {
     private JLabel labelStatus;
     private JButton buttonStart;
     private JButton buttonReset;
-
     // Flags to determine start & stop activity of GUI and Crawler
     private boolean isCrawlerWorking;
     private boolean isInterrupted = false;
 
-    public CrawlerGui(JFrame f, Crawler crawler) {
-        this.f = f;
+    public CrawlerGui(Crawler crawler) {
         this.crawler = crawler;
         nrOfChosenThreads = nrOfDefaultThreads;
         nrOfChosenDepth = nrOfDefaultDepth;
         urlsToCrawl = new ArrayList<>();
         initComponents();
+    }
+
+    public JPanel getDialogPane() {
+        return dialogPane;
     }
 
     public ArrayList<String> getUrlsToCrawl() {
@@ -86,7 +86,7 @@ public class CrawlerGui {
         labelThreads2.setText(min + " - " + max + " (default: " + nrOfDefaultThreads + ")");
     }
 
-    private void initComponents() {
+    public void initComponents() {
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         labelLinks = new JLabel();
@@ -103,10 +103,6 @@ public class CrawlerGui {
         buttonStart = new JButton();
         buttonReset = new JButton();
 
-        //======== this ========
-        Container contentPane = f.getContentPane();
-        contentPane.setLayout(new BorderLayout());
-
         //======== dialogPane ========
         {
             dialogPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -122,10 +118,6 @@ public class CrawlerGui {
             }
             dialogPane.add(contentPanel, BorderLayout.NORTH);
         }
-
-        contentPane.add(dialogPane, BorderLayout.CENTER);
-        f.pack();
-        f.setLocationRelativeTo(f.getOwner());
     }
 
     private void initContentPanel() {

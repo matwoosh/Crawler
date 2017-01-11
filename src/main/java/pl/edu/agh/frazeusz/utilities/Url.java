@@ -2,7 +2,6 @@ package pl.edu.agh.frazeusz.utilities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by Mateusz on 14/12/2016.
@@ -10,7 +9,7 @@ import java.util.Objects;
 public class Url<T> {
     private Url<T> parent = null;
     private List<Url<T>> children = new ArrayList<>();
-    String absoluteUrl;
+    private String absoluteUrl;
 
     public Url(String parent) {
         // TODO
@@ -25,6 +24,10 @@ public class Url<T> {
         this.parent = parent;
     }
 
+    public void removeParent() {
+        this.parent = null;
+    }
+
     public List<Url<T>> getChildren() {
         return children;
     }
@@ -34,8 +37,8 @@ public class Url<T> {
         this.children.add(child);
     }
 
-    public void addChildren(List<Url> children) {
-        // TODO
+    public void addChildren(List<Url<T>> children) {
+        this.children.addAll(children);
     }
 
     public String getAbsoluteUrl() {
@@ -57,7 +60,4 @@ public class Url<T> {
             return false;
     }
 
-    public void removeParent() {
-        this.parent = null;
-    }
 }

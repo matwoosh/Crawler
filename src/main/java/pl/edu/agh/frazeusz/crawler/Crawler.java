@@ -1,5 +1,6 @@
 package pl.edu.agh.frazeusz.crawler;
 
+import pl.edu.agh.frazeusz.monitor.Monitor;
 import pl.edu.agh.frazeusz.parser.Parser;
 import pl.edu.agh.frazeusz.utilities.Url;
 
@@ -8,20 +9,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Crawler {
+    private Monitor monitor;
+    private Parser parser;
     private Queue<String> urlsToProcess;
     private Set<Url<String>> allUrls;
+    private int nrOfThreads;
+    private int nrOfDepth;
 
     private ExecutorService executor;
     private boolean isCrawling;
 
-    private int nrOfThreads;
-    private int nrOfDepth;
+    public Crawler(Parser parser, Monitor monitor) {
+        this.monitor = monitor;
+        this.parser = parser;
 
-    public Crawler() {
         urlsToProcess = new LinkedList<>();
         allUrls = new HashSet<>();
-
-        Parser parser = new Parser(this);
     }
 
     public void start(ArrayList<String> urlsFromUser, int nrOfThreads, int nrOfDepth) {
@@ -37,44 +40,41 @@ public class Crawler {
 
         if (!isCrawling) {
             for (String url : urlsToProcess) {
-                //allUrls.add(new Url<>(url)); // TODO
+                allUrls.add(new Url<String>(url));
             }
 
             initializeDownloaders();
         }
     }
 
+    public void stop() {
+        stopThreads();
+        this.isCrawling = false;
+    }
+
     public boolean isCrawling() {
         return isCrawling;
     }
 
-    public void stop() {
-        stop_threads();
-        this.isCrawling = false;
-    }
-
-    private void stop_threads() {
+    private void stopThreads() {
         executor.shutdown();
         while (!executor.isTerminated()) {
+            // TODO
         }
     }
 
     private void initializeDownloaders() {
         // Concurrent tasks
         for (int i = 0; i < nrOfThreads; i++) {
-            Downloader downloader = new Downloader();
+            Downloader downloader = new Downloader(parser);
             executor.execute(downloader);
         }
 
+        // TODO
         // or Threadpool or etc...
     }
 
-    private void update_info() {
-        System.out.println("C << przyszedl nowy URL");
-        for (String element : urlsToProcess) {
-            System.out.print("  " + element + " ");
-        }
-        System.out.println();
+    private void sendContent() {
+        // TODO
     }
-
 }
