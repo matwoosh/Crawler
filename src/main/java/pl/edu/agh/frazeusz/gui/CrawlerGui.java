@@ -52,6 +52,13 @@ public class CrawlerGui extends JPanel {
         return new CrawlerConf(urlsToCrawl, nrOfChosenThreads, nrOfChosenDepth);
     }
 
+    public void resetFields() {
+        textArea.setText("");
+        spinnerThreads.setValue(nrOfDefaultThreads);
+        spinnerDepth.setValue(nrOfDefaultDepth);
+        System.out.println("> textArea: " + textArea.getText() + ", Threads: " + nrOfChosenThreads + ", Depth: " + nrOfChosenDepth);
+    }
+
     private void initComponents() {
         contentPanel = new JPanel();
         labelLinks = new JLabel();

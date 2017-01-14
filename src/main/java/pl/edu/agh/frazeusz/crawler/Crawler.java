@@ -1,6 +1,5 @@
 package pl.edu.agh.frazeusz.crawler;
 
-import pl.edu.agh.frazeusz.gui.CrawlerGui;
 import pl.edu.agh.frazeusz.monitor.Monitor;
 import pl.edu.agh.frazeusz.parser.Parser;
 
@@ -9,7 +8,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Crawler {
-    private CrawlerGui crawlerGui;
     private Monitor monitor;
     private Parser parser;
 
@@ -24,7 +22,6 @@ public class Crawler {
     private long pageSizeInBytes;
 
     public Crawler(Parser parser, Monitor monitor) {
-        this.crawlerGui = new CrawlerGui();
         this.monitor = monitor;
         this.parser = parser;
 
@@ -33,10 +30,6 @@ public class Crawler {
 
         this.processedPages = 0;
         this.pageSizeInBytes = 0;
-    }
-
-    public CrawlerGui getPanel() {
-        return crawlerGui;
     }
 
     void addProcessedPages(int processedPages) {

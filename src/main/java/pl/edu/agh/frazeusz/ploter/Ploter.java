@@ -13,7 +13,7 @@ public class Ploter {
     private static final Parser parser = new Parser();
     private static final Monitor monitor = new Monitor();
     private static final Crawler crawler = new Crawler(parser, monitor);
-    private static final CrawlerGui crawlerGui = crawler.getPanel();
+    private static final CrawlerGui crawlerGui = new CrawlerGui();
     private static boolean isInterrupted;
 
     public Ploter() {
@@ -58,7 +58,7 @@ public class Ploter {
 
     private static void startCrawling() {
         // In new thread
-        CrawlerConf crawlerConf = crawler.getPanel().getConf();
+        CrawlerConf crawlerConf = crawlerGui.getConf();
         crawler.start(crawlerConf.getUrlsToCrawl(), crawlerConf.getNrOfChosenThreads(), crawlerConf.getNrOfChosenDepth());
 
         while (crawler.isCrawling()) {
