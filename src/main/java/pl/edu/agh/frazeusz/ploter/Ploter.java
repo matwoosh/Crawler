@@ -14,7 +14,7 @@ public class Ploter {
     private static final Monitor monitor = new Monitor();
     private static final Crawler crawler = new Crawler(parser, monitor);
     private static final CrawlerGui crawlerGui = crawler.getPanel();
-    private boolean isInterrupted;
+    private static boolean isInterrupted;
 
     public Ploter() {
         isInterrupted = false;
@@ -22,6 +22,12 @@ public class Ploter {
 
     public static void main(String[] args) {
         startGUI();
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        startCrawling();
     }
 
     private static void startGUI() {
@@ -50,7 +56,7 @@ public class Ploter {
         f.setVisible(true);
     }
 
-    private void startCrawling() {
+    private static void startCrawling() {
         // In new thread
         CrawlerConf crawlerConf = crawler.getPanel().getConf();
         crawler.start(crawlerConf.getUrlsToCrawl(), crawlerConf.getNrOfChosenThreads(), crawlerConf.getNrOfChosenDepth());
