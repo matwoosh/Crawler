@@ -1,5 +1,6 @@
 package pl.edu.agh.frazeusz.crawler;
 
+import pl.edu.agh.frazeusz.gui.CrawlerGui;
 import pl.edu.agh.frazeusz.monitor.Monitor;
 import pl.edu.agh.frazeusz.parser.Parser;
 
@@ -8,8 +9,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Crawler {
+    private CrawlerGui crawlerGui;
     private Monitor monitor;
     private Parser parser;
+
     private Queue<String> urlsToProcess;
     private Set<Url<String>> allUrls;
     private int nrOfThreads;
@@ -21,13 +24,19 @@ public class Crawler {
     private long pageSizeInBytes;
 
     public Crawler(Parser parser, Monitor monitor) {
+        this.crawlerGui = new CrawlerGui();
         this.monitor = monitor;
         this.parser = parser;
-        this.processedPages = 0;
-        this.pageSizeInBytes = 0;
 
         urlsToProcess = new LinkedList<>();
         allUrls = new HashSet<>();
+
+        this.processedPages = 0;
+        this.pageSizeInBytes = 0;
+    }
+
+    public CrawlerGui getPanel() {
+        return crawlerGui;
     }
 
     void addProcessedPages(int processedPages) {
@@ -77,7 +86,11 @@ public class Crawler {
     private void initializeDownloaders() {
         // TODO
 
+        // Crawling started
+        isCrawling = true;
+
         // Concurrent tasks
+        // or Threadpool or etc...
         for (int i = 0; i < nrOfThreads; i++) {
             // TODO - simple example
             if (urlsToProcess.peek() != null) {
@@ -86,7 +99,8 @@ public class Crawler {
             }
         }
 
-        // or Threadpool or etc...
+        // Crawling finished
+        isCrawling = false;
     }
 
     private void sendStatsToMonitor() {

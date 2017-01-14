@@ -1,26 +1,19 @@
 package pl.edu.agh.frazeusz.gui;
 
-import pl.edu.agh.frazeusz.crawler.Crawler;
+import pl.edu.agh.frazeusz.crawler.CrawlerConf;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Wojtek on 2017-01-03.
  */
 
 public class CrawlerGui extends JPanel {
-    // Class passed to GUI
-    private final Crawler crawler;
     // Defaults
     private int nrOfDefaultThreads = Runtime.getRuntime().availableProcessors();
     private int nrOfDefaultDepth = 2;
@@ -39,20 +32,24 @@ public class CrawlerGui extends JPanel {
     private JSpinner spinnerDepth;
     private JLabel labelThreads2;
     private JLabel labelDepth2;
-    private JPanel buttonBar;
-    private JLabel labelStatus;
-    private JButton buttonStart;
-    private JButton buttonReset;
-    // Flags to determine start & stop activity of GUI and Crawler
-    private boolean isCrawlerWorking;
-    private boolean isInterrupted = false;
 
-    public CrawlerGui(Crawler crawler) {
-        this.crawler = crawler;
+    public CrawlerGui() {
         nrOfChosenThreads = nrOfDefaultThreads;
         nrOfChosenDepth = nrOfDefaultDepth;
         urlsToCrawl = new ArrayList<>();
         initComponents();
+    }
+
+    public CrawlerConf getConf() {
+        // Get URLs from textarea to List which will be further passed to Crawler.
+        for (String line : textArea.getText().split("\\n")) {
+            if (!line.isEmpty()) {
+                urlsToCrawl.add(line);
+                System.out.println("> " + line);
+            }
+        }
+
+        return new CrawlerConf(urlsToCrawl, nrOfChosenThreads, nrOfChosenDepth);
     }
 
     private void initComponents() {
@@ -66,10 +63,6 @@ public class CrawlerGui extends JPanel {
         spinnerDepth = new JSpinner();
         labelThreads2 = new JLabel();
         labelDepth2 = new JLabel();
-        buttonBar = new JPanel();
-        labelStatus = new JLabel();
-        buttonStart = new JButton();
-        buttonReset = new JButton();
 
         //======== Main JPanel (this) ========
         {
@@ -79,8 +72,6 @@ public class CrawlerGui extends JPanel {
             //======== contentPanel ========
             {
                 initContentPanel();
-                // ===== buttonBar =====
-                initButtonBar();
                 // ===== LAYOUT =====
                 initLayout();
             }
@@ -130,39 +121,6 @@ public class CrawlerGui extends JPanel {
         });
     }
 
-    private void initButtonBar() {
-        buttonBar.setBorder(new EmptyBorder(5, 0, 0, 0));
-        buttonBar.setLayout(new GridBagLayout());
-        ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 0, 0, 0, 40};
-        ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 1.0, 1.0, 1.0, 0.0};
-
-        //---- labelStatus ----
-        labelStatus.setHorizontalAlignment(SwingConstants.CENTER);
-        labelStatus.setPreferredSize(new Dimension(0, 16));
-        labelStatus.setMinimumSize(new Dimension(0, 16));
-        labelStatus.setMaximumSize(new Dimension(0, 16));
-        labelStatus.setText("");
-        labelStatus.setVisible(false);
-        buttonBar.add(labelStatus, new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 5), 0, 0));
-
-        //---- buttonStart ----
-        buttonStart.setText("Start");
-        buttonStart.addActionListener(new StartButtonListener());
-
-        buttonBar.add(buttonStart, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 5), 0, 0));
-
-        //---- buttonReset ----
-        buttonReset.setText("Reset");
-        buttonBar.add(buttonReset, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0));
-        buttonReset.addActionListener(new ResetButtonListener());
-    }
-
     private void initLayout() {
         GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
         contentPanel.setLayout(contentPanelLayout);
@@ -185,7 +143,6 @@ public class CrawlerGui extends JPanel {
                                         .addComponent(labelThreads2)
                                         .addComponent(labelDepth2))
                                 .addGap(158, 158, 158))
-                        .addComponent(buttonBar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         contentPanelLayout.setVerticalGroup(
                 contentPanelLayout.createParallelGroup()
@@ -204,121 +161,8 @@ public class CrawlerGui extends JPanel {
                                         .addComponent(spinnerDepth)
                                         .addComponent(labelDepth2))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())
         );
-    }
-
-    private void setComponentsEnabled(boolean enabled) {
-        buttonReset.setEnabled(enabled);
-        textArea.setEnabled(enabled);
-        spinnerThreads.setEnabled(enabled);
-        spinnerDepth.setEnabled(enabled);
-    }
-
-    private class ResetButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            textArea.setText("");
-            spinnerThreads.setValue(nrOfDefaultThreads);
-            spinnerDepth.setValue(nrOfDefaultDepth);
-            labelStatus.setVisible(false);
-            System.out.println("> textArea: " + textArea.getText() + ", Threads: " + nrOfChosenThreads + ", Depth: " + nrOfChosenDepth);
-        }
-    }
-
-    private class StartButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            CountDownLatch latch = new CountDownLatch(1);   // Only ONE Crawler can be running at the same time
-            ExecutorService executorService = Executors.newFixedThreadPool(1);
-            CrawlingWorker crawlingWorker = new CrawlingWorker(latch);
-
-            if (!isCrawlerWorking) {
-                setComponentsEnabled(false);
-                isCrawlerWorking = true;
-                isInterrupted = false;
-                labelStatus.setText("Crawling...");
-                labelStatus.setForeground(new Color(0, 0, 200));
-                labelStatus.setVisible(true);
-
-                executorService.execute(crawlingWorker);
-                System.out.println("> Crawling started...");
-            } else {
-                crawlingWorker.cancel(true);
-            }
-        }
-    }
-
-    private class CrawlingWorker extends SwingWorker<Void, Void> {
-        CountDownLatch latch;
-
-        CrawlingWorker(CountDownLatch latch) {
-            this.latch = latch;
-        }
-
-        @Override
-        protected Void doInBackground() throws Exception {
-            buttonStart.setText("Stop !");
-            System.out.println("> Threads: " + nrOfChosenThreads + ", Depth: " + nrOfChosenDepth);
-
-            // Get URLs from textarea to List which will be further passed to Crawler.
-            for (String line : textArea.getText().split("\\n")) {
-                if (!line.isEmpty()) {
-                    urlsToCrawl.add(line);
-                    System.out.println("> " + line);
-                }
-            }
-
-            crawler.start(urlsToCrawl, nrOfChosenThreads, nrOfChosenDepth);
-
-            while (crawler.isCrawling()) {
-                if (isInterrupted) {
-                    crawler.stop();
-                }
-            }
-
-            // Example of terminating
-            int countdown = 1;
-            while (countdown <= 10) {
-                if (isInterrupted) {
-                    break;
-                }
-
-                System.out.println("> " + countdown);
-                ++countdown;
-
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void done() {
-            setComponentsEnabled(true);
-            urlsToCrawl.clear();
-            buttonStart.setText("Start");
-
-            if (!isCancelled() && !isInterrupted) {
-                labelStatus.setText("Done !");
-                labelStatus.setForeground(new Color(0, 140, 0));
-                System.out.println("> Crawling done !");
-            } else {
-                isInterrupted = true;
-                labelStatus.setText("Interrupted !");
-                labelStatus.setForeground(new Color(180, 0, 0));
-                System.out.println("> Crawling interrupted !");
-            }
-
-            latch.countDown();
-            isCrawlerWorking = false;
-        }
-
     }
 
 }

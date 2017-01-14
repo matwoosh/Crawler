@@ -1,6 +1,7 @@
 package pl.edu.agh.frazeusz.ploter;
 
 import pl.edu.agh.frazeusz.crawler.Crawler;
+import pl.edu.agh.frazeusz.crawler.CrawlerConf;
 import pl.edu.agh.frazeusz.gui.CrawlerGui;
 import pl.edu.agh.frazeusz.monitor.Monitor;
 import pl.edu.agh.frazeusz.parser.Parser;
@@ -8,12 +9,22 @@ import pl.edu.agh.frazeusz.parser.Parser;
 import javax.swing.*;
 import java.awt.*;
 
-public class Main {
-    public static void main(String[] args) {
-        final Parser parser = new Parser();
-        final Monitor monitor = new Monitor();
-        final Crawler crawler = new Crawler(parser, monitor);
+public class Ploter {
+    private static final Parser parser = new Parser();
+    private static final Monitor monitor = new Monitor();
+    private static final Crawler crawler = new Crawler(parser, monitor);
+    private static final CrawlerGui crawlerGui = crawler.getPanel();
+    private boolean isInterrupted;
 
+    public Ploter() {
+        isInterrupted = false;
+    }
+
+    public static void main(String[] args) {
+        startGUI();
+    }
+
+    private static void startGUI() {
         final JFrame f = new JFrame("Frazeusz");
 
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -23,7 +34,6 @@ public class Main {
                 contentPane.setLayout(new BorderLayout());
 
                 // Crawler panel
-                CrawlerGui crawlerGui = new CrawlerGui(crawler);
                 contentPane.add(crawlerGui, BorderLayout.NORTH);
 
                 // Other panels:
@@ -38,5 +48,17 @@ public class Main {
         f.setSize(440, 250);
         f.getContentPane().setLayout(null);
         f.setVisible(true);
+    }
+
+    private void startCrawling() {
+        // In new thread
+        CrawlerConf crawlerConf = crawler.getPanel().getConf();
+        crawler.start(crawlerConf.getUrlsToCrawl(), crawlerConf.getNrOfChosenThreads(), crawlerConf.getNrOfChosenDepth());
+
+        while (crawler.isCrawling()) {
+            if (isInterrupted) {
+                crawler.stop();
+            }
+        }
     }
 }
