@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
  * Created by Wojtek on 2017-01-03.
  */
 
-public class CrawlerGui {
+public class CrawlerGui extends JPanel {
     // Class passed to GUI
     private final Crawler crawler;
     // Defaults
@@ -29,7 +29,6 @@ public class CrawlerGui {
     private int nrOfChosenDepth;
     private ArrayList<String> urlsToCrawl;
     // GUI components
-    private JPanel dialogPane;
     private JPanel contentPanel;
     private JLabel labelLinks;
     private JScrollPane scrollPane;
@@ -56,38 +55,7 @@ public class CrawlerGui {
         initComponents();
     }
 
-    public JPanel getDialogPane() {
-        return dialogPane;
-    }
-
-    public ArrayList<String> getUrlsToCrawl() {
-        return urlsToCrawl;
-    }
-
-    public void setValuesOfDepth(int nrOfDefaultDepth, int min, int max, int stepSize) {
-        this.nrOfDefaultDepth = nrOfDefaultDepth;
-        nrOfChosenDepth = nrOfDefaultDepth;
-
-        SpinnerModel valueOfDepth = new SpinnerNumberModel(nrOfDefaultDepth, min, max, stepSize);
-        spinnerDepth.setModel(valueOfDepth);
-
-        //---- labelDepth2 ----
-        labelDepth2.setText(min + " - " + max + " (default: " + nrOfDefaultDepth + ")");
-    }
-
-    public void setValuesOfThreads(int nrOfDefaultThreads, int min, int max, int stepSize) {
-        this.nrOfDefaultThreads = nrOfDefaultThreads;
-        nrOfChosenThreads = nrOfDefaultThreads;
-
-        SpinnerModel valueOfThreads = new SpinnerNumberModel(nrOfDefaultThreads, min, max, stepSize);
-        spinnerThreads.setModel(valueOfThreads);
-
-        //---- labelThreads2 ----
-        labelThreads2.setText(min + " - " + max + " (default: " + nrOfDefaultThreads + ")");
-    }
-
-    public void initComponents() {
-        dialogPane = new JPanel();
+    private void initComponents() {
         contentPanel = new JPanel();
         labelLinks = new JLabel();
         scrollPane = new JScrollPane();
@@ -103,10 +71,10 @@ public class CrawlerGui {
         buttonStart = new JButton();
         buttonReset = new JButton();
 
-        //======== dialogPane ========
+        //======== Main JPanel (this) ========
         {
-            dialogPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-            dialogPane.setLayout(new BorderLayout());
+            this.setBorder(new EmptyBorder(5, 5, 5, 5));
+            this.setLayout(new BorderLayout());
 
             //======== contentPanel ========
             {
@@ -116,7 +84,7 @@ public class CrawlerGui {
                 // ===== LAYOUT =====
                 initLayout();
             }
-            dialogPane.add(contentPanel, BorderLayout.NORTH);
+            this.add(contentPanel, BorderLayout.NORTH);
         }
     }
 
@@ -131,7 +99,12 @@ public class CrawlerGui {
         labelThreads1.setText("Threads:");
 
         //---- spinnerThreads ----
-        setValuesOfThreads(nrOfDefaultThreads, 1, 10000, 1);
+        SpinnerModel valueOfThreads = new SpinnerNumberModel(nrOfDefaultThreads, 1, 10000, 1);
+        spinnerThreads.setModel(valueOfThreads);
+
+        //---- labelThreads2 ----
+        labelThreads2.setText("1 - 10000 (default: " + nrOfDefaultThreads + ")");
+
         spinnerThreads.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 nrOfChosenThreads = (int) ((JSpinner) e.getSource()).getValue();
@@ -143,7 +116,12 @@ public class CrawlerGui {
         labelDepth1.setText("Depth:");
 
         //---- spinnerDepth ----
-        setValuesOfDepth(nrOfDefaultDepth, 1, 10, 2);
+        SpinnerModel valueOfDepth = new SpinnerNumberModel(nrOfDefaultDepth, 1, 10, 1);
+        spinnerDepth.setModel(valueOfDepth);
+
+        //---- labelDepth2 ----
+        labelDepth2.setText("1 - 10 (default: " + nrOfDefaultDepth + ")");
+
         spinnerDepth.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 nrOfChosenDepth = (int) ((JSpinner) e.getSource()).getValue();
@@ -311,7 +289,7 @@ public class CrawlerGui {
                 ++countdown;
 
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(300);
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }

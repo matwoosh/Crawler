@@ -1,7 +1,6 @@
 package pl.edu.agh.frazeusz.crawler;
 
 import pl.edu.agh.frazeusz.parser.Parser;
-import pl.edu.agh.frazeusz.utilities.Url;
 
 /**
  * Created by Mateusz on 14/12/2016.

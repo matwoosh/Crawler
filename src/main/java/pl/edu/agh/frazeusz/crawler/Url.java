@@ -1,4 +1,4 @@
-package pl.edu.agh.frazeusz.utilities;
+package pl.edu.agh.frazeusz.crawler;
 
 import java.util.ArrayList;
 import java.util.List;

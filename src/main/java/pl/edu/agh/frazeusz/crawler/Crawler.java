@@ -2,7 +2,6 @@ package pl.edu.agh.frazeusz.crawler;
 
 import pl.edu.agh.frazeusz.monitor.Monitor;
 import pl.edu.agh.frazeusz.parser.Parser;
-import pl.edu.agh.frazeusz.utilities.Url;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;

@@ -24,11 +24,10 @@ public class Main {
 
                 // Crawler panel
                 CrawlerGui crawlerGui = new CrawlerGui(crawler);
-                crawlerGui.initComponents();
-                contentPane.add(crawlerGui.getDialogPane(), BorderLayout.NORTH);
+                contentPane.add(crawlerGui, BorderLayout.NORTH);
 
                 // Other panels:
-                // e.g.: contentPane.add(otherPanel.getDialogPane(), BorderLayout.SOUTH);
+                // e.g.: contentPane.add(otherPanel, BorderLayout.SOUTH);
 
                 f.pack();
                 f.setLocationRelativeTo(f.getOwner());
